@@ -1,12 +1,11 @@
 #include "skyline.h"
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
 /* Read a whole line, including spaces, and remove its final newline. */
 void readLine(const char *prompt, char *buffer, int size) {
-    int ch;
-    size_t len;
+    int extraCharacter;
+    size_t lineLength;
 
     printf("%s", prompt);
 
@@ -15,25 +14,26 @@ void readLine(const char *prompt, char *buffer, int size) {
         return;
     }
 
-    len = strlen(buffer);
+    lineLength = strlen(buffer);
 
-    if (len > 0 && buffer[len - 1] == '\n') {
-        buffer[len - 1] = '\0';
+    if (lineLength > 0 && buffer[lineLength - 1] == '\n') {
+        buffer[lineLength - 1] = '\0';
     } else {
-        /* Discard the rest of an overlong line so it won't affect the next prompt. */
-        while ((ch = getchar()) != '\n' && ch != EOF) {
+        /* Discard extra characters so the next prompt starts on a new line. */
+        while ((extraCharacter = getchar()) != '\n' &&
+               extraCharacter != EOF) {
         }
     }
 }
 
 /* Keep asking until the user enters one whole number. */
 int readInt(const char *prompt) {
-    char input[100];
-    char extra;
+    char inputLine[100];
+    char extraCharacter;
     int value;
 
     while (1) {
-        readLine(prompt, input, sizeof(input));
+        readLine(prompt, inputLine, sizeof(inputLine));
 
         /* End the input loop cleanly if input is closed, such as Ctrl+Z. */
         if (feof(stdin)) {
@@ -41,7 +41,7 @@ int readInt(const char *prompt) {
         }
 
         /* The extra character check rejects input such as "12abc". */
-        if (sscanf(input, "%d %c", &value, &extra) == 1) {
+        if (sscanf(inputLine, "%d %c", &value, &extraCharacter) == 1) {
             return value;
         }
 
@@ -51,18 +51,18 @@ int readInt(const char *prompt) {
 
 /* Keep asking until the user enters a non-negative number. */
 float readFloat(const char *prompt) {
-    char input[100];
-    char extra;
+    char inputLine[100];
+    char extraCharacter;
     float value;
 
     while (1) {
-        readLine(prompt, input, sizeof(input));
+        readLine(prompt, inputLine, sizeof(inputLine));
 
         if (feof(stdin)) {
             return 0;
         }
 
-        if (sscanf(input, "%f %c", &value, &extra) == 1
+        if (sscanf(inputLine, "%f %c", &value, &extraCharacter) == 1
             && value >= 0) {
             return value;
         }

@@ -4,12 +4,10 @@
 
 /* Show the passenger menu and run the selected action. */
 void passengerMenu(void) {
-    int choice;
+    int menuChoice;
 
     do {
-        printf("\n================================================\n");
-        printf("                 PASSENGER PORTAL\n");
-        printf("================================================\n");
+        printf("\n--- Passenger Portal ---\n");
         printf("1. View available flights\n");
         printf("2. Search flights by route\n");
         printf("3. Search flight by number\n");
@@ -17,11 +15,10 @@ void passengerMenu(void) {
         printf("5. View my booking\n");
         printf("6. Cancel my booking\n");
         printf("0. Back to main menu\n");
-        printf("================================================\n");
 
-        choice = readInt("Enter your choice: ");
+        menuChoice = readInt("Enter your choice: ");
 
-        switch (choice) {
+        switch (menuChoice) {
             case 1:
                 displayFlights();
                 break;
@@ -56,21 +53,21 @@ void passengerMenu(void) {
                 printf("Invalid choice. Try again.\n");
         }
 
-        if (choice != 0) {
+        if (menuChoice != 0) {
             pauseScreen();
         }
 
-    } while (choice != 0);
+    } while (menuChoice != 0);
 }
 
 /* Ask for the admin ID; allow up to three attempts. */
 int ownerLogin(void) {
     char enteredID[60];
-    int attempt;
+    int loginAttempt;
 
-    printf("\n========== OWNER / ADMIN LOGIN ==========\n");
+    printf("\n--- Owner / Admin Login ---\n");
 
-    for (attempt = 1; attempt <= 3; attempt++) {
+    for (loginAttempt = 1; loginAttempt <= 3; loginAttempt++) {
         readLine("Enter owner ID: ", enteredID, sizeof(enteredID));
 
         if (strcmp(enteredID, OWNER_ID) == 0) {
@@ -79,7 +76,7 @@ int ownerLogin(void) {
         }
 
         printf("Incorrect ID. Attempts remaining: %d\n",
-               3 - attempt);
+               3 - loginAttempt);
     }
 
     printf("Access denied. Returning to main menu.\n");
@@ -88,16 +85,14 @@ int ownerLogin(void) {
 
 /* Check the admin ID, then show the admin menu. */
 void ownerMenu(void) {
-    int choice;
+    int menuChoice;
 
     if (!ownerLogin()) {
         return;
     }
 
     do {
-        printf("\n================================================\n");
-        printf("                 ADMIN PANEL\n");
-        printf("================================================\n");
+        printf("\n--- Admin Panel ---\n");
         printf("1. View all flights\n");
         printf("2. Add a new flight\n");
         printf("3. Search flight by number\n");
@@ -106,15 +101,12 @@ void ownerMenu(void) {
         printf("6. Search booking by ID\n");
         printf("7. Cancel any booking\n");
         printf("8. View waiting list\n");
-        printf("9. View recent action history (Stack)\n");
-        printf("10. View airline summary report\n");
-        printf("11. Save all records\n");
+        printf("9. Save all records\n");
         printf("0. Logout\n");
-        printf("================================================\n");
 
-        choice = readInt("Enter your choice: ");
+        menuChoice = readInt("Enter your choice: ");
 
-        switch (choice) {
+        switch (menuChoice) {
             case 1:
                 displayFlights();
                 break;
@@ -150,14 +142,6 @@ void ownerMenu(void) {
                 break;
 
             case 9:
-                displayActionHistory();
-                break;
-
-            case 10:
-                displayReport();
-                break;
-
-            case 11:
                 saveAll();
                 printf("All records saved successfully.\n");
                 break;
@@ -171,9 +155,9 @@ void ownerMenu(void) {
                 printf("Invalid choice. Try again.\n");
         }
 
-        if (choice != 0) {
+        if (menuChoice != 0) {
             pauseScreen();
         }
 
-    } while (choice != 0);
+    } while (menuChoice != 0);
 }

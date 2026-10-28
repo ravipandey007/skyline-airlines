@@ -40,12 +40,6 @@ typedef struct {
     QueueNode *rear;
 } Queue;
 
-/* Actions use a stack, so the newest action is shown first. */
-typedef struct StackNode {
-    char action[150];
-    struct StackNode *next;
-} StackNode;
-
 /* The BST stores flight numbers to support ordered flight searches. */
 typedef struct TreeNode {
     int flightNo;
@@ -53,12 +47,12 @@ typedef struct TreeNode {
     struct TreeNode *right;
 } TreeNode;
 
+/* One shared copy of each list, counter, and tree root. */
 extern Flight flights[MAX_FLIGHTS];
 extern int flightCount;
 extern int nextBookingID;
 extern Booking *bookingHead;
 extern Queue waitingList;
-extern StackNode *historyTop;
 extern TreeNode *flightRoot;
 
 /* Read input safely so names and cities can contain spaces. */
@@ -73,23 +67,20 @@ void addSampleFlights(void);
 void displayFlights(void);
 void searchFlightByNumber(void);
 void searchFlightsByRoute(void);
-TreeNode *insertTree(TreeNode *root, int number);
-TreeNode *searchTree(TreeNode *root, int number);
+TreeNode *insertTree(TreeNode *root, int flightNumber);
+TreeNode *searchTree(TreeNode *root, int flightNumber);
 void freeTree(TreeNode *root);
 void rebuildFlightTree(void);
 void searchFlightBST(void);
 void addFlight(void);
-void displayReport(void);
 
 /* Confirmed bookings and passengers waiting for a seat. */
-Booking *findBooking(int id);
-int appendBooking(int id, const char *name, int age, int flightNo);
+Booking *findBooking(int bookingID);
+int appendBooking(int bookingID, const char *name, int age, int flightNo);
 void displayAllBookings(void);
 void viewBooking(int passengerMode);
 void enqueueWaiting(const char *name, int age, int flightNo);
 void displayWaitingList(void);
-void pushHistory(const char *action);
-void displayActionHistory(void);
 void bookTicket(void);
 void promoteWaitingPassenger(int flightNo);
 void cancelTicket(int passengerMode);

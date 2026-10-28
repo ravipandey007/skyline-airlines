@@ -11,7 +11,7 @@ flights and review airline activity.
 - Join a flight waiting list when all seats are taken. When a booking is
   cancelled, the earliest waiting passenger for that flight is promoted.
 - Add flights through the admin menu.
-- Review bookings, the waiting list, recent actions, and an airline summary.
+- Review confirmed bookings and the waiting list.
 - Save flights and confirmed bookings between runs.
 
 ## Data structures
@@ -23,7 +23,6 @@ This project demonstrates common data structures in C:
 | Array | Stores up to 50 flight records |
 | Singly linked list | Stores confirmed bookings |
 | FIFO queue | Keeps waiting passengers in arrival order |
-| Stack | Records actions, with the newest action first |
 | Binary search tree | Searches flights by flight number |
 
 ## Code explanation
@@ -50,7 +49,7 @@ The script compiles the C source files with C99 warnings enabled and starts
 1. Choose **Passenger Portal** to browse flights, book a ticket, view a
    booking, or cancel it.
 2. Choose **Airline Owner / Admin Portal** to manage flights and view
-   bookings and reports.
+   bookings and the waiting list.
 3. Keep the booking ID shown after booking; it is needed to view or cancel a
    booking.
 
@@ -62,7 +61,7 @@ not secure authentication.
 
 ```text
 code\
-  bookings.c   Booking list, waiting queue, and action stack
+  bookings.c   Booking list and waiting queue
   flights.c    Flight records and binary search tree
   input.c      Console input helpers
   main.c       Program entry point
@@ -79,5 +78,4 @@ The program reads and writes `flights.txt` and `bookings.txt` in the project
 folder. If there are no saved flights, it starts with sample flights.
 Generated data files and build output are excluded from Git.
 
-The waiting list and action history are kept in memory and reset when the
-program exits.
+The waiting list is kept in memory and reset when the program exits.

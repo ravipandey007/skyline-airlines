@@ -4,53 +4,53 @@
 #include <string.h>
 
 /* Find and return a booking by its ID. */
-Booking *findBooking(int id) {
-    Booking *current = bookingHead;
+Booking *findBooking(int bookingID) {
+    Booking *currentBooking = bookingHead;
 
-    while (current != NULL) {
-        if (current->bookingID == id) {
-            return current;
+    while (currentBooking != NULL) {
+        if (currentBooking->bookingID == bookingID) {
+            return currentBooking;
         }
 
-        current = current->next;
+        currentBooking = currentBooking->next;
     }
 
     return NULL;
 }
 
 /* Make a booking node and attach it to the end of the booking list. */
-int appendBooking(int id, const char *name,
+int appendBooking(int bookingID, const char *name,
                   int age, int flightNo) {
-    Booking *node;
-    Booking *current;
+    Booking *newBooking;
+    Booking *lastBooking;
 
-    node = (Booking *)malloc(sizeof(Booking));
+    newBooking = (Booking *)malloc(sizeof(Booking));
 
-    if (node == NULL) {
+    if (newBooking == NULL) {
         printf("Memory allocation failed.\n");
         return 0;
     }
 
-    node->bookingID = id;
-    node->age = age;
-    node->flightNo = flightNo;
+    newBooking->bookingID = bookingID;
+    newBooking->age = age;
+    newBooking->flightNo = flightNo;
 
-    snprintf(node->passengerName,
-             sizeof(node->passengerName), "%s", name);
+    snprintf(newBooking->passengerName,
+             sizeof(newBooking->passengerName), "%s", name);
 
-    node->next = NULL;
+    newBooking->next = NULL;
 
     /* Add the new booking at the end of the singly linked list. */
     if (bookingHead == NULL) {
-        bookingHead = node;
+        bookingHead = newBooking;
     } else {
-        current = bookingHead;
+        lastBooking = bookingHead;
 
-        while (current->next != NULL) {
-            current = current->next;
+        while (lastBooking->next != NULL) {
+            lastBooking = lastBooking->next;
         }
 
-        current->next = node;
+        lastBooking->next = newBooking;
     }
 
     return 1;
@@ -58,35 +58,36 @@ int appendBooking(int id, const char *name,
 
 /* Print each booking in the linked list. */
 void displayAllBookings(void) {
-    Booking *current = bookingHead;
+    Booking *currentBooking = bookingHead;
 
-    if (current == NULL) {
+    if (currentBooking == NULL) {
         printf("\nNo confirmed bookings.\n");
         return;
     }
 
     printf("\n========== CONFIRMED BOOKINGS ==========\n");
 
-    while (current != NULL) {
+    while (currentBooking != NULL) {
         printf("Booking ID: %d | Passenger: %s\n",
-               current->bookingID,
-               current->passengerName);
+               currentBooking->bookingID,
+               currentBooking->passengerName);
 
         printf("Age: %d | Flight: %d\n\n",
-               current->age, current->flightNo);
+               currentBooking->age, currentBooking->flightNo);
 
-        current = current->next;
+        currentBooking = currentBooking->next;
     }
 }
 
 /* Show a booking; passengers must also enter the booking name. */
 void viewBooking(int passengerMode) {
-    int id, index;
-    char name[NAME_LEN];
+    int bookingID;
+    int flightIndex;
+    char passengerName[NAME_LEN];
     Booking *booking;
 
-    id = readInt("\nEnter booking ID: ");
-    booking = findBooking(id);
+    bookingID = readInt("\nEnter booking ID: ");
+    booking = findBooking(bookingID);
 
     if (booking == NULL) {
         printf("Booking not found.\n");
@@ -95,15 +96,15 @@ void viewBooking(int passengerMode) {
 
     if (passengerMode) {
         readLine("Enter passenger name used for booking: ",
-                 name, sizeof(name));
+                 passengerName, sizeof(passengerName));
 
-        if (strcmp(name, booking->passengerName) != 0) {
+        if (strcmp(passengerName, booking->passengerName) != 0) {
             printf("Passenger name does not match.\n");
             return;
         }
     }
 
-    index = findFlightIndex(booking->flightNo);
+    flightIndex = findFlightIndex(booking->flightNo);
 
     printf("\n========== SKYLINE AIRLINES ==========\n");
     printf("             E-TICKET\n");
@@ -114,14 +115,14 @@ void viewBooking(int passengerMode) {
     printf("Age        : %d\n", booking->age);
     printf("Flight     : %d\n", booking->flightNo);
 
-    if (index != -1) {
+    if (flightIndex != -1) {
         printf("Route      : %s to %s\n",
-               flights[index].source,
-               flights[index].destination);
+               flights[flightIndex].source,
+               flights[flightIndex].destination);
 
-        printf("Date       : %s\n", flights[index].date);
-        printf("Time       : %s\n", flights[index].time);
-        printf("Fare       : Rs. %.2f\n", flights[index].fare);
+        printf("Date       : %s\n", flights[flightIndex].date);
+        printf("Time       : %s\n", flights[flightIndex].time);
+        printf("Fare       : Rs. %.2f\n", flights[flightIndex].fare);
     }
 
     printf("======================================\n");
@@ -129,28 +130,28 @@ void viewBooking(int passengerMode) {
 
 /* Add a passenger to the back of the waiting queue. */
 void enqueueWaiting(const char *name, int age, int flightNo) {
-    QueueNode *node;
+    QueueNode *newPassenger;
 
-    node = (QueueNode *)malloc(sizeof(QueueNode));
+    newPassenger = (QueueNode *)malloc(sizeof(QueueNode));
 
-    if (node == NULL) {
+    if (newPassenger == NULL) {
         printf("Could not add passenger to waiting list.\n");
         return;
     }
 
-    snprintf(node->name, sizeof(node->name), "%s", name);
+    snprintf(newPassenger->name, sizeof(newPassenger->name), "%s", name);
 
-    node->age = age;
-    node->flightNo = flightNo;
-    node->next = NULL;
+    newPassenger->age = age;
+    newPassenger->flightNo = flightNo;
+    newPassenger->next = NULL;
 
     /* The first item is both the front and rear of an empty queue. */
     if (waitingList.rear == NULL) {
-        waitingList.front = node;
-        waitingList.rear = node;
+        waitingList.front = newPassenger;
+        waitingList.rear = newPassenger;
     } else {
-        waitingList.rear->next = node;
-        waitingList.rear = node;
+        waitingList.rear->next = newPassenger;
+        waitingList.rear = newPassenger;
     }
 
     printf("\nThis flight is full.\n");
@@ -159,67 +160,35 @@ void enqueueWaiting(const char *name, int age, int flightNo) {
 
 /* Print passengers from the front to the back of the queue. */
 void displayWaitingList(void) {
-    QueueNode *current = waitingList.front;
+    QueueNode *currentPassenger = waitingList.front;
     int position = 1;
 
-    if (current == NULL) {
+    if (currentPassenger == NULL) {
         printf("\nWaiting list is empty.\n");
         return;
     }
 
     printf("\n========== WAITING LIST ==========\n");
 
-    while (current != NULL) {
+    while (currentPassenger != NULL) {
         printf("%d. %s | Age: %d | Flight: %d\n",
                position,
-               current->name,
-               current->age,
-               current->flightNo);
+               currentPassenger->name,
+               currentPassenger->age,
+               currentPassenger->flightNo);
 
         position++;
-        current = current->next;
-    }
-}
-
-/* Put the newest action at the top of the history stack. */
-void pushHistory(const char *action) {
-    StackNode *node;
-
-    node = (StackNode *)malloc(sizeof(StackNode));
-
-    if (node == NULL) {
-        return;
-    }
-
-    snprintf(node->action, sizeof(node->action), "%s", action);
-
-    /* Push onto the top so history is naturally newest-first (LIFO). */
-    node->next = historyTop;
-    historyTop = node;
-}
-
-/* Print actions from the top of the stack, newest first. */
-void displayActionHistory(void) {
-    StackNode *current = historyTop;
-
-    if (current == NULL) {
-        printf("\nNo actions recorded in this session.\n");
-        return;
-    }
-
-    printf("\n========== RECENT ACTIONS ==========\n");
-
-    while (current != NULL) {
-        printf("- %s\n", current->action);
-        current = current->next;
+        currentPassenger = currentPassenger->next;
     }
 }
 
 /* Book a seat, or add the passenger to the queue when the flight is full. */
 void bookTicket(void) {
     char name[NAME_LEN];
-    char action[150];
-    int age, number, index, id;
+    int passengerAge;
+    int flightNumber;
+    int flightIndex;
+    int bookingID;
 
     readLine("\nPassenger full name: ", name, sizeof(name));
 
@@ -228,36 +197,36 @@ void bookTicket(void) {
         return;
     }
 
-    age = readInt("Passenger age: ");
+    passengerAge = readInt("Passenger age: ");
 
-    if (age < 1 || age > 120) {
+    if (passengerAge < 1 || passengerAge > 120) {
         printf("Enter an age between 1 and 120.\n");
         return;
     }
 
     displayFlights();
 
-    number = readInt("\nEnter flight number to book: ");
-    index = findFlightIndex(number);
+    flightNumber = readInt("\nEnter flight number to book: ");
+    flightIndex = findFlightIndex(flightNumber);
 
-    if (index == -1) {
+    if (flightIndex == -1) {
         printf("Invalid flight number.\n");
         return;
     }
 
-    if (flights[index].availableSeats == 0) {
-        enqueueWaiting(name, age, number);
+    if (flights[flightIndex].availableSeats == 0) {
+        enqueueWaiting(name, passengerAge, flightNumber);
         return;
     }
 
-    id = nextBookingID++;
+    bookingID = nextBookingID++;
 
-    if (!appendBooking(id, name, age, number)) {
+    if (!appendBooking(bookingID, name, passengerAge, flightNumber)) {
         nextBookingID--;
         return;
     }
 
-    flights[index].availableSeats--;
+    flights[flightIndex].availableSeats--;
 
     printf("\n");
     printf("================================================\n");
@@ -265,107 +234,100 @@ void bookTicket(void) {
     printf("                  E-TICKET\n");
     printf("================================================\n");
 
-    printf("Booking ID      : %d\n", id);
+    printf("Booking ID      : %d\n", bookingID);
     printf("Passenger       : %s\n", name);
-    printf("Age             : %d\n", age);
-    printf("Flight          : %d\n", number);
+    printf("Age             : %d\n", passengerAge);
+    printf("Flight          : %d\n", flightNumber);
     printf("Route           : %s to %s\n",
-           flights[index].source,
-           flights[index].destination);
-    printf("Travel date     : %s\n", flights[index].date);
-    printf("Departure time  : %s\n", flights[index].time);
-    printf("Ticket fare     : Rs. %.2f\n", flights[index].fare);
-    printf("Seats remaining : %d\n", flights[index].availableSeats);
+           flights[flightIndex].source,
+           flights[flightIndex].destination);
+    printf("Travel date     : %s\n", flights[flightIndex].date);
+    printf("Departure time  : %s\n", flights[flightIndex].time);
+    printf("Ticket fare     : Rs. %.2f\n", flights[flightIndex].fare);
+    printf("Seats remaining : %d\n", flights[flightIndex].availableSeats);
 
     printf("================================================\n");
     printf("Keep your booking ID for future reference.\n");
 
-    snprintf(action, sizeof(action),
-             "Booking %d created for %s on flight %d",
-             id, name, number);
-
-    pushHistory(action);
 }
 
 /* Move the first waiting passenger for this flight into confirmed bookings. */
 void promoteWaitingPassenger(int flightNo) {
-    QueueNode *current = waitingList.front;
-    QueueNode *previous = NULL;
-    int index = findFlightIndex(flightNo);
-    int id;
-    char action[150];
+    QueueNode *currentPassenger = waitingList.front;
+    QueueNode *previousPassenger = NULL;
+    int flightIndex = findFlightIndex(flightNo);
+    int bookingID;
 
-    if (index == -1 || flights[index].availableSeats <= 0) {
+    if (flightIndex == -1 || flights[flightIndex].availableSeats <= 0) {
         return;
     }
 
     /* Find the earliest queued passenger for this flight. */
-    while (current != NULL && current->flightNo != flightNo) {
-        previous = current;
-        current = current->next;
+    while (currentPassenger != NULL &&
+           currentPassenger->flightNo != flightNo) {
+        previousPassenger = currentPassenger;
+        currentPassenger = currentPassenger->next;
     }
 
-    if (current == NULL) {
+    if (currentPassenger == NULL) {
         return;
     }
 
     /* Confirm the booking before removing the passenger from the queue. */
-    id = nextBookingID;
-    if (!appendBooking(id, current->name, current->age, flightNo)) {
+    bookingID = nextBookingID;
+    if (!appendBooking(bookingID, currentPassenger->name,
+                       currentPassenger->age, flightNo)) {
         return;
     }
 
     /* Unlink the passenger while keeping the queue's front and rear correct. */
-    if (previous == NULL) {
-        waitingList.front = current->next;
+    if (previousPassenger == NULL) {
+        waitingList.front = currentPassenger->next;
     } else {
-        previous->next = current->next;
+        previousPassenger->next = currentPassenger->next;
     }
 
-    if (waitingList.rear == current) {
-        waitingList.rear = previous;
+    if (waitingList.rear == currentPassenger) {
+        waitingList.rear = previousPassenger;
     }
 
     nextBookingID++;
-    flights[index].availableSeats--;
+    flights[flightIndex].availableSeats--;
 
     printf("\nWaiting-list passenger confirmed!\n");
-    printf("Passenger: %s\n", current->name);
-    printf("New booking ID: %d\n", id);
+    printf("Passenger: %s\n", currentPassenger->name);
+    printf("New booking ID: %d\n", bookingID);
 
-    snprintf(action, sizeof(action),
-             "Waiting passenger %s confirmed on flight %d",
-             current->name, flightNo);
-    pushHistory(action);
-
-    free(current);
+    free(currentPassenger);
 }
 
 /* Cancel a booking and offer its seat to the next waiting passenger. */
 void cancelTicket(int passengerMode) {
-    int id, index, flightNo;
-    Booking *current = bookingHead;
-    Booking *previous = NULL;
-    char name[NAME_LEN];
-    char action[150];
+    int bookingID;
+    int flightIndex;
+    int flightNo;
+    Booking *currentBooking = bookingHead;
+    Booking *previousBooking = NULL;
+    char passengerName[NAME_LEN];
 
-    id = readInt("\nEnter booking ID to cancel: ");
+    bookingID = readInt("\nEnter booking ID to cancel: ");
 
-    while (current != NULL && current->bookingID != id) {
-        previous = current;
-        current = current->next;
+    while (currentBooking != NULL &&
+           currentBooking->bookingID != bookingID) {
+        previousBooking = currentBooking;
+        currentBooking = currentBooking->next;
     }
 
-    if (current == NULL) {
+    if (currentBooking == NULL) {
         printf("Booking not found or already cancelled.\n");
         return;
     }
 
     if (passengerMode) {
         readLine("Enter passenger name used for booking: ",
-                 name, sizeof(name));
+                 passengerName, sizeof(passengerName));
 
-        if (strcmp(name, current->passengerName) != 0) {
+        if (strcmp(passengerName, currentBooking->passengerName) != 0) {
             printf("Passenger name does not match.\n");
             printf("Cancellation denied.\n");
             return;
@@ -373,29 +335,25 @@ void cancelTicket(int passengerMode) {
     }
 
     /* Remove this booking node from the linked list. */
-    if (previous == NULL) {
-        bookingHead = current->next;
+    if (previousBooking == NULL) {
+        bookingHead = currentBooking->next;
     } else {
-        previous->next = current->next;
+        previousBooking->next = currentBooking->next;
     }
 
-    flightNo = current->flightNo;
-    index = findFlightIndex(flightNo);
+    flightNo = currentBooking->flightNo;
+    flightIndex = findFlightIndex(flightNo);
 
-    if (index != -1 &&
-        flights[index].availableSeats < flights[index].totalSeats) {
-        flights[index].availableSeats++;
+    if (flightIndex != -1 &&
+        flights[flightIndex].availableSeats <
+            flights[flightIndex].totalSeats) {
+        flights[flightIndex].availableSeats++;
     }
-
-    snprintf(action, sizeof(action),
-             "Booking %d for %s cancelled",
-             current->bookingID, current->passengerName);
 
     printf("Booking %d cancelled successfully.\n",
-           current->bookingID);
+           currentBooking->bookingID);
 
-    free(current);
-    pushHistory(action);
+    free(currentBooking);
 
     /* If a seat becomes available, check the waiting list. */
     promoteWaitingPassenger(flightNo);

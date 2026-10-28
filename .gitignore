@@ -1,4 +1,9 @@
+# Compiled application files.
 /build/
-/.qtcreator/
+
+# Personal flight and booking data.
 /flights.txt
 /bookings.txt
+
+# Local Qt Creator settings.
+/.qtcreator/

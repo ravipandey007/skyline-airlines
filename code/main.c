@@ -3,7 +3,7 @@
 
 /* Start the program, load saved data, and show the main menu. */
 int main(void) {
-    int choice;
+    int menuChoice;
 
     printf("\nLoading Skyline Airlines...\n");
 
@@ -25,9 +25,9 @@ int main(void) {
         printf("2. Airline Owner / Admin Portal\n");
         printf("0. Exit\n");
 
-        choice = readInt("Enter your choice: ");
+        menuChoice = readInt("Enter your choice: ");
 
-        switch (choice) {
+        switch (menuChoice) {
             case 1:
                 passengerMenu();
                 break;
@@ -45,7 +45,7 @@ int main(void) {
                 printf("Invalid choice. Choose 1, 2, or 0.\n");
         }
 
-    } while (choice != 0);
+    } while (menuChoice != 0);
 
     freeAllMemory();
 
