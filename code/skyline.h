@@ -6,6 +6,7 @@
 #define CITY_LEN 30
 #define OWNER_ID "SKYADMIN2026"
 
+/* One flight stored in the fixed-size flight array. */
 typedef struct {
     int flightNo;
     char source[CITY_LEN];
@@ -60,11 +61,13 @@ extern Queue waitingList;
 extern StackNode *historyTop;
 extern TreeNode *flightRoot;
 
+/* Read input safely so names and cities can contain spaces. */
 void readLine(const char *prompt, char *buffer, int size);
 int readInt(const char *prompt);
 float readFloat(const char *prompt);
 void pauseScreen(void);
 
+/* Flight list and flight-number search tree. */
 int findFlightIndex(int flightNo);
 void addSampleFlights(void);
 void displayFlights(void);
@@ -78,6 +81,7 @@ void searchFlightBST(void);
 void addFlight(void);
 void displayReport(void);
 
+/* Confirmed bookings and passengers waiting for a seat. */
 Booking *findBooking(int id);
 int appendBooking(int id, const char *name, int age, int flightNo);
 void displayAllBookings(void);
@@ -90,12 +94,14 @@ void bookTicket(void);
 void promoteWaitingPassenger(int flightNo);
 void cancelTicket(int passengerMode);
 
+/* Read and write saved flight and booking records. */
 void saveFlights(void);
 int loadFlights(void);
 void saveBookings(void);
 void loadBookings(void);
 void saveAll(void);
 
+/* Console menus and cleanup. */
 void passengerMenu(void);
 int ownerLogin(void);
 void ownerMenu(void);

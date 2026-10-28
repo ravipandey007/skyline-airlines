@@ -1,6 +1,7 @@
 #include "skyline.h"
 #include <stdlib.h>
 
+/* All shared program data is defined here and declared in skyline.h. */
 Flight flights[MAX_FLIGHTS];
 int flightCount = 0;
 int nextBookingID = 1001;
@@ -10,27 +11,28 @@ StackNode *historyTop = NULL;
 TreeNode *flightRoot = NULL;
 
 void freeAllMemory(void) {
-    Booking *b;
-    QueueNode *q;
-    StackNode *s;
+    Booking *booking;
+    QueueNode *passenger;
+    StackNode *action;
 
     while (bookingHead != NULL) {
-        b = bookingHead;
+        booking = bookingHead;
         bookingHead = bookingHead->next;
-        free(b);
+        free(booking);
     }
 
     while (waitingList.front != NULL) {
-        q = waitingList.front;
+        passenger = waitingList.front;
         waitingList.front = waitingList.front->next;
-        free(q);
+        free(passenger);
     }
 
     while (historyTop != NULL) {
-        s = historyTop;
+        action = historyTop;
         historyTop = historyTop->next;
-        free(s);
+        free(action);
     }
 
+    /* freeTree visits and releases each node in the search tree. */
     freeTree(flightRoot);
 }

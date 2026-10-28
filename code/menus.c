@@ -1,10 +1,8 @@
 #include "skyline.h"
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
-/* ================= PASSENGER PORTAL ================= */
-
+/* Show the passenger menu and run the selected action. */
 void passengerMenu(void) {
     int choice;
 
@@ -65,8 +63,7 @@ void passengerMenu(void) {
     } while (choice != 0);
 }
 
-/* ================= OWNER LOGIN ================= */
-
+/* Ask for the admin ID; allow up to three attempts. */
 int ownerLogin(void) {
     char enteredID[60];
     int attempt;
@@ -89,8 +86,7 @@ int ownerLogin(void) {
     return 0;
 }
 
-/* ================= OWNER / ADMIN PORTAL ================= */
-
+/* Check the admin ID, then show the admin menu. */
 void ownerMenu(void) {
     int choice;
 

@@ -3,8 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* ================= FLIGHT ARRAY ================= */
-
+/* Return the array position of a flight, or -1 if it does not exist. */
 int findFlightIndex(int flightNo) {
     int i;
 
@@ -18,6 +17,7 @@ int findFlightIndex(int flightNo) {
     return -1;
 }
 
+/* Add the example flights used when no saved flight file exists. */
 void addSampleFlights(void) {
     Flight sample[] = {
         {101, "Delhi", "Mumbai", "2026-11-10",
@@ -44,6 +44,7 @@ void addSampleFlights(void) {
     }
 }
 
+/* Print every flight in the array. */
 void displayFlights(void) {
     int i;
 
@@ -72,6 +73,7 @@ void displayFlights(void) {
     }
 }
 
+/* Ask for a flight number, then show its details. */
 void searchFlightByNumber(void) {
     int number;
     int i;
@@ -95,6 +97,7 @@ void searchFlightByNumber(void) {
     printf("Ticket fare     : Rs. %.2f\n", flights[i].fare);
 }
 
+/* Show flights whose start and destination cities both match. */
 void searchFlightsByRoute(void) {
     char source[CITY_LEN];
     char destination[CITY_LEN];
@@ -130,8 +133,7 @@ void searchFlightsByRoute(void) {
     }
 }
 
-/* ================= FLIGHT BINARY SEARCH TREE ================= */
-
+/* Insert a flight number into its correct place in the BST. */
 TreeNode *insertTree(TreeNode *root, int number) {
     TreeNode *node;
 
@@ -160,6 +162,7 @@ TreeNode *insertTree(TreeNode *root, int number) {
     return root;
 }
 
+/* Find a flight number by following the BST's left or right links. */
 TreeNode *searchTree(TreeNode *root, int number) {
     /* Each comparison chooses one branch, avoiding a full array scan. */
     if (root == NULL || root->flightNo == number) {
@@ -173,6 +176,7 @@ TreeNode *searchTree(TreeNode *root, int number) {
     return searchTree(root->right, number);
 }
 
+/* Free this tree's children before freeing the parent node. */
 void freeTree(TreeNode *root) {
     if (root == NULL) {
         return;
@@ -183,6 +187,7 @@ void freeTree(TreeNode *root) {
     free(root);
 }
 
+/* Recreate the BST from the flight array. */
 void rebuildFlightTree(void) {
     int i;
 
@@ -195,6 +200,7 @@ void rebuildFlightTree(void) {
     }
 }
 
+/* Search the BST, then print details from the flight array. */
 void searchFlightBST(void) {
     int number, index;
     TreeNode *result;
@@ -220,8 +226,7 @@ void searchFlightBST(void) {
     }
 }
 
-/* ================= ADD FLIGHT ================= */
-
+/* Ask for flight details and add a new flight to the array and BST. */
 void addFlight(void) {
     Flight f;
 
@@ -260,8 +265,7 @@ void addFlight(void) {
     printf("Flight added successfully.\n");
 }
 
-/* ================= ADMIN REPORT ================= */
-
+/* Add up seats and bookings to print a simple admin report. */
 void displayReport(void) {
     int i, total = 0, available = 0, count = 0;
     int index;

@@ -3,8 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* ================= FILE HANDLING ================= */
-
+/* Write all flights to the pipe-separated flights.txt file. */
 void saveFlights(void) {
     FILE *fp = fopen("flights.txt", "w");
     int i;
@@ -30,6 +29,7 @@ void saveFlights(void) {
     fclose(fp);
 }
 
+/* Load saved flights; return 1 when at least one flight was read. */
 int loadFlights(void) {
     FILE *fp = fopen("flights.txt", "r");
     Flight f;
@@ -51,6 +51,7 @@ int loadFlights(void) {
     return flightCount > 0;
 }
 
+/* Write each confirmed booking to bookings.txt. */
 void saveBookings(void) {
     FILE *fp = fopen("bookings.txt", "w");
     Booking *current = bookingHead;
@@ -73,6 +74,7 @@ void saveBookings(void) {
     fclose(fp);
 }
 
+/* Load bookings into the linked list and find the next unused booking ID. */
 void loadBookings(void) {
     FILE *fp = fopen("bookings.txt", "r");
     int id, age, number;
@@ -98,6 +100,7 @@ void loadBookings(void) {
     fclose(fp);
 }
 
+/* Save both kinds of permanent data. */
 void saveAll(void) {
     saveFlights();
     saveBookings();

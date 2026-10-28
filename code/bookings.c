@@ -3,8 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* ================= BOOKING LINKED LIST ================= */
-
+/* Find and return a booking by its ID. */
 Booking *findBooking(int id) {
     Booking *current = bookingHead;
 
@@ -19,6 +18,7 @@ Booking *findBooking(int id) {
     return NULL;
 }
 
+/* Make a booking node and attach it to the end of the booking list. */
 int appendBooking(int id, const char *name,
                   int age, int flightNo) {
     Booking *node;
@@ -56,6 +56,7 @@ int appendBooking(int id, const char *name,
     return 1;
 }
 
+/* Print each booking in the linked list. */
 void displayAllBookings(void) {
     Booking *current = bookingHead;
 
@@ -78,6 +79,7 @@ void displayAllBookings(void) {
     }
 }
 
+/* Show a booking; passengers must also enter the booking name. */
 void viewBooking(int passengerMode) {
     int id, index;
     char name[NAME_LEN];
@@ -125,8 +127,7 @@ void viewBooking(int passengerMode) {
     printf("======================================\n");
 }
 
-/* ================= WAITING QUEUE ================= */
-
+/* Add a passenger to the back of the waiting queue. */
 void enqueueWaiting(const char *name, int age, int flightNo) {
     QueueNode *node;
 
@@ -156,6 +157,7 @@ void enqueueWaiting(const char *name, int age, int flightNo) {
     printf("You have been added to the waiting list.\n");
 }
 
+/* Print passengers from the front to the back of the queue. */
 void displayWaitingList(void) {
     QueueNode *current = waitingList.front;
     int position = 1;
@@ -179,8 +181,7 @@ void displayWaitingList(void) {
     }
 }
 
-/* ================= ACTION HISTORY STACK ================= */
-
+/* Put the newest action at the top of the history stack. */
 void pushHistory(const char *action) {
     StackNode *node;
 
@@ -197,6 +198,7 @@ void pushHistory(const char *action) {
     historyTop = node;
 }
 
+/* Print actions from the top of the stack, newest first. */
 void displayActionHistory(void) {
     StackNode *current = historyTop;
 
@@ -213,8 +215,7 @@ void displayActionHistory(void) {
     }
 }
 
-/* ================= TICKET BOOKING ================= */
-
+/* Book a seat, or add the passenger to the queue when the flight is full. */
 void bookTicket(void) {
     char name[NAME_LEN];
     char action[150];
@@ -286,12 +287,13 @@ void bookTicket(void) {
     pushHistory(action);
 }
 
-/* ================= WAITING-LIST PROMOTION ================= */
-
+/* Move the first waiting passenger for this flight into confirmed bookings. */
 void promoteWaitingPassenger(int flightNo) {
     QueueNode *current = waitingList.front;
     QueueNode *previous = NULL;
     int index = findFlightIndex(flightNo);
+    int id;
+    char action[150];
 
     if (index == -1 || flights[index].availableSeats <= 0) {
         return;
@@ -307,6 +309,12 @@ void promoteWaitingPassenger(int flightNo) {
         return;
     }
 
+    /* Confirm the booking before removing the passenger from the queue. */
+    id = nextBookingID;
+    if (!appendBooking(id, current->name, current->age, flightNo)) {
+        return;
+    }
+
     /* Unlink the passenger while keeping the queue's front and rear correct. */
     if (previous == NULL) {
         waitingList.front = current->next;
@@ -318,32 +326,22 @@ void promoteWaitingPassenger(int flightNo) {
         waitingList.rear = previous;
     }
 
-    {
-        int id = nextBookingID++;
-        char action[150];
+    nextBookingID++;
+    flights[index].availableSeats--;
 
-        if (appendBooking(id, current->name, current->age, flightNo)) {
-            flights[index].availableSeats--;
+    printf("\nWaiting-list passenger confirmed!\n");
+    printf("Passenger: %s\n", current->name);
+    printf("New booking ID: %d\n", id);
 
-            printf("\nWaiting-list passenger confirmed!\n");
-            printf("Passenger: %s\n", current->name);
-            printf("New booking ID: %d\n", id);
-
-            snprintf(action, sizeof(action),
-                     "Waiting passenger %s confirmed on flight %d",
-                     current->name, flightNo);
-
-            pushHistory(action);
-        } else {
-            nextBookingID--;
-        }
-    }
+    snprintf(action, sizeof(action),
+             "Waiting passenger %s confirmed on flight %d",
+             current->name, flightNo);
+    pushHistory(action);
 
     free(current);
 }
 
-/* ================= CANCEL TICKET ================= */
-
+/* Cancel a booking and offer its seat to the next waiting passenger. */
 void cancelTicket(int passengerMode) {
     int id, index, flightNo;
     Booking *current = bookingHead;

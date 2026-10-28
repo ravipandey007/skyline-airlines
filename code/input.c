@@ -3,8 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* ================= INPUT FUNCTIONS ================= */
-
+/* Read a whole line, including spaces, and remove its final newline. */
 void readLine(const char *prompt, char *buffer, int size) {
     int ch;
     size_t len;
@@ -27,6 +26,7 @@ void readLine(const char *prompt, char *buffer, int size) {
     }
 }
 
+/* Keep asking until the user enters one whole number. */
 int readInt(const char *prompt) {
     char input[100];
     char extra;
@@ -34,6 +34,11 @@ int readInt(const char *prompt) {
 
     while (1) {
         readLine(prompt, input, sizeof(input));
+
+        /* End the input loop cleanly if input is closed, such as Ctrl+Z. */
+        if (feof(stdin)) {
+            return 0;
+        }
 
         /* The extra character check rejects input such as "12abc". */
         if (sscanf(input, "%d %c", &value, &extra) == 1) {
@@ -44,6 +49,7 @@ int readInt(const char *prompt) {
     }
 }
 
+/* Keep asking until the user enters a non-negative number. */
 float readFloat(const char *prompt) {
     char input[100];
     char extra;
@@ -51,6 +57,10 @@ float readFloat(const char *prompt) {
 
     while (1) {
         readLine(prompt, input, sizeof(input));
+
+        if (feof(stdin)) {
+            return 0;
+        }
 
         if (sscanf(input, "%f %c", &value, &extra) == 1
             && value >= 0) {
@@ -61,6 +71,7 @@ float readFloat(const char *prompt) {
     }
 }
 
+/* Wait for Enter before showing the next menu. */
 void pauseScreen(void) {
     char input[8];
     readLine("\nPress Enter to continue...", input, sizeof(input));

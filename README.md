@@ -26,6 +26,12 @@ This project demonstrates common data structures in C:
 | Stack | Records actions, with the newest action first |
 | Binary search tree | Searches flights by flight number |
 
+## Code explanation
+
+See [`CODE_EXPLANATION.pdf`](CODE_EXPLANATION.pdf) for a beginner-friendly
+walkthrough of the program flow, data structures, every source file, and every
+function.
+
 ## Build and run
 
 **Requirements:** Windows and GCC (for example, MinGW) available on `PATH`.
